@@ -43,10 +43,11 @@ top:50%; left:50%; transform:translate(-50%,-50%); background:red;text-transform
 .mainarea{width:600px; height:100vh; background-color:#2d3436; margin:auto; position:relative; overflow:hidden;}
 
 .box{display:none;}
+.small{display:none;}	
 </style>
 </head>
 <body>
-<div class="mobileview d-md-none d-block">
+<div class="mobileview small">
 <div class="mainarea"></div>
  </div>
 <div class="cargame box" id="game">
@@ -69,6 +70,7 @@ top:50%; left:50%; transform:translate(-50%,-50%); background:red;text-transform
 var wid=window.outerWidth;
 console.log(wid);
 const cargame= document.querySelector('.cargame');
+const mobileview=document.querySelector('.mobileview');
 const score= document.querySelector('.score');
 const screen= document.querySelector('.screen');
 const gamearea= document.querySelector('.gamearea');
@@ -77,11 +79,11 @@ const fire=document.querySelector('.fire');
 if(wid<800)
 {
 cargame.classList.add('box');
-
+mobileview.classList.remove('small');
 }
 else if(wid>800)
 {cargame.classList.remove('box');
-
+mobileview.classList.add('small');
 }
 let player={speed:5,score:0};
 
