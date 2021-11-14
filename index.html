@@ -40,7 +40,7 @@ top:50%; left:50%; transform:translate(-50%,-50%); background:red;text-transform
 
 
 .mobileview{height:100vh; background:url("bgforgame.jpg");}
-.mainarea{width:600px; height:100vh; background-color:#2d3436; margin:auto; position:relative; overflow:hidden;}
+.mainarea{width:80%; height:100vh; background-color:#2d3436; margin:auto; position:relative; overflow:hidden;}
 
 .box{display:none;}
 .small{display:none;}	
@@ -48,11 +48,16 @@ top:50%; left:50%; transform:translate(-50%,-50%); background:red;text-transform
 </head>
 <body>
 <div class="mobileview small">
-<div class="mainarea"></div>
+<div class="mainarea">
+<div>
+<img  src="carlogo.png"style="background:#2d3436; top:20%; left:30%; width:300px; height:300px; position:absolute;">
+<p style="color:white; position:absolute; top:50%; left:40%; transform:translate(-30%,-30%); font-size:38px;">Please use the laptop/desktop device for using the game</p>
+</div></div>
  </div>
 <div class="cargame box" id="game">
 
 <div class="score num"></div>
+<img  class="logo" src="carlogo.png" style="background:#2d3436; position:absolute; z-index:1;left:50%; top:10%;  transform:translate(-50%,0%); ">
 <div class="screen">
 <p>
    <span style="background:yellow; color:black;"> Use arrow keys to move</span><br><br>
@@ -76,6 +81,7 @@ const screen= document.querySelector('.screen');
 const gamearea= document.querySelector('.gamearea');
 const button=document.querySelector('.button');
 const fire=document.querySelector('.fire');
+const logo=document.querySelector('.logo');
 if(wid<800)
 {
 cargame.classList.add('box');
@@ -106,6 +112,7 @@ let car=document.querySelector('.car');
 let road=gamearea.getBoundingClientRect();
 
 if (player.start){
+logo.style.display='none';
 moveline();
 moveenemy(car);
 if(keys.ArrowUp && player.y>(road.top+100)){player.y-=player.speed}
@@ -205,7 +212,7 @@ function gameover()
 {
 player.start=false;
 screen.classList.remove('hide');
-
+screen.style.top=50+"%";
 if(player.score>2000)
 {fire.classList.remove('work');
 }
