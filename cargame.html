@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<head>
+<title>car game </title>
+<style>
+*{margin:0;padding:0;}
+.hide{display:none;}
+.car,.encar{width:50px; height:70px; background:red; position:absolute;  bottom:120px;}
+.lines{width:10px; height:100px; background:white;position:absolute; margin-left:195px; margin-top:4px; }
+.gamearea{width:400px; height:100vh; background-color:#2d3436; margin:auto; position:relative; overflow:hidden;
+ }
+.end{display:none;}
+
+</style>
+</head>
+<body>
+<div class="cargame">
+<div class="score"></div>
+<div class="screen">
+<p> Press here to start <br>
+    Use arrow keys to move<br>
+	If you hit another car you will lose</p>
+	</div>
+<div class="overscreen end">
+<p> game over!!!! <br>
+    Use arrow keys to move<br>
+	If you hit another car you will lose</p>
+	</div>
+	<div class="gamearea hide"> </div>
+</div>
+<script>
+const score= document.querySelector('.score');
+const screen= document.querySelector('.screen');
+const gamearea= document.querySelector('.gamearea');
+const overscreen=document.querySelector('.overscreen');
+
+let player={speed:5,score:0};
+
+
+let keys={ArrowUp: false,ArrowDown: false,ArrowLeft:false,ArrowRight: false}
+document.addEventListener('keydown',keyDown);
+document.addEventListener('keyup',keyUp);
+function keyDown(e){e.preventDefault();
+keys[e.key]=true;
+}
+function keyUp(e){e.preventDefault();
+keys[e.key]=false;
+
+}
+
+
+function gameplay(){
+
+let car=document.querySelector('.car');
+let road=gamearea.getBoundingClientRect();
+
+if (player.start){
+moveline();
+moveenemy(car);
+if(keys.ArrowUp && player.y>(road.top+100)){player.y-=player.speed}
+if(keys.ArrowDown&& player.y<(road.bottom-75) ){player.y+=player.speed}
+if(keys.ArrowLeft && player.x>0){player.x-=player.speed}
+if(keys.ArrowRight && player.x<(road.width-50)){player.x+=player.speed}
+car.style.top=player.y+"px";
+car.style.left=player.x+"px";
+window.requestAnimationFrame(gameplay);
+console.log(player.score++);
+}
+}
+
+screen.addEventListener('click',start);
+function start(){ 
+gamearea.classList.remove('hide');
+screen.classList.add('hide');
+player.start=true;
+player.score=0;
+window.requestAnimationFrame(gameplay);
+
+for(x=0;x<5;x++)
+{
+let roadline= document.createElement('div');
+roadline.setAttribute('class','lines');
+roadline.y=(x*150);
+roadline.style.top=roadline.y+"px";
+gamearea.appendChild(roadline);
+}
+var car=document.createElement('div');
+car.setAttribute('class','car');
+gamearea.appendChild(car);
+player.x=car.offsetLeft;
+player.y=car.offsetTop;
+
+for(x=0;x<3;x++)
+{
+let enemy= document.createElement('div');
+enemy.setAttribute('class','encar');
+enemy.y=((x+1)*350)* -1;
+enemy.style.top=enemy.y+"px";
+enemy.style.background="blue";
+enemy.style.left=Math.floor(Math.random()*380)+"px";
+
+gamearea.appendChild(enemy);
+}
+}
+
+function moveline()
+{
+let lines= document.querySelectorAll('.lines');
+lines.forEach(function(value){ 
+if(value.y>=700){
+value.y-=750;
+}
+ value.y+=player.speed;
+ value.style.top=value.y+"px";
+})
+}
+function moveenemy(car)
+{
+let encar= document.querySelectorAll('.encar');
+encar.forEach(function(value){ 
+if(collide(car,value)){ console.log("hit");
+hit();
+}
+
+if(value.y>=700){
+value.y=-300;
+value.style.left=Math.floor(Math.random()*380)+"px";
+}
+ value.y+=player.speed;
+ value.style.top=value.y+"px";
+})
+}
+
+
+function collide(a,b){
+arect=a.getBoundingClientRect();
+brect=b.getBoundingClientRect();
+return !((arect.top > brect.bottom)||(arect.bottom < brect.top)||(arect.left > brect.right)||(arect.right < brect.left))
+}
+
+function hit(){
+gamearea.classList.add('hide');
+overscreen.classList.remove('end');}
+
+</script>
+</body>
+</html>
