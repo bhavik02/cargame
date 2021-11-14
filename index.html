@@ -1,38 +1,88 @@
 <!DOCTYPE html>
 <head>
 <title>car game </title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" 
+integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+
 <style>
 *{margin:0;padding:0;}
 .hide{display:none;}
-.car,.encar{width:50px; height:70px; background:red; position:absolute;  bottom:120px;}
-.lines{width:10px; height:100px; background:white;position:absolute; margin-left:195px; margin-top:4px; }
-.gamearea{width:400px; height:100vh; background-color:#2d3436; margin:auto; position:relative; overflow:hidden;
- }
-.end{display:none;}
+.car,.encar{width:50px; height:70px; background:red; position:absolute; left:50px;  bottom:120px;
+background:url("gamecar.png"); background-size:cover; }
 
+.lines{width:10px; height:100px; background:white;position:absolute; margin-left:295px; margin-top:4px; }
+.gamearea{width:600px; height:100vh; background-color:#2d3436; margin:auto; position:relative; overflow:hidden;
+ }
+ .cargame{height:100vh; background:url("bgforgame.jpg");
+ }
+ .pointer{cursor:pointer;}
+.end{display:none;}
+.score{position:absolute;
+top:15px;
+left:60px;
+background:#20b2aa;
+background:2px inset #3cb371;
+color:white;
+width:250px;
+height:70px;
+font-size:27px;
+display:flex;align-items:center; justify-content:center;}
+.num{display:none;}
+.screen{position:absolute;width:580px; height:170px;color:white;font-size:18px; z-index:1; font-family:calibiri;padding:20px;text-align:center;
+top:50%; left:50%; transform:translate(-50%,-50%); background:red;text-transform:uppercase;
+}
+.button{background:yellow; font-size:18px; border:2px solid gray; padding:5px;}
+.button:hover{background:#f0e68c; cursor:pointer; }
+.fire1{left:50%; top:20%; height:50vh; transform:translate(-50%,-50%); position:absolute; z-index:1;}
+.fire2{left:50%; top:80%; height:50vh; transform:translate(-50%,-50%); position:absolute; z-index:1;}
+.work{display:none;}
+.gamearea{border-left:4px dashed white;border-right:4px dashed white;}
+
+
+.mobileview{height:100vh; background:url("bgforgame.jpg");}
+.mainarea{width:600px; height:100vh; background-color:#2d3436; margin:auto; position:relative; overflow:hidden;}
+
+.box{display:none;}
 </style>
 </head>
 <body>
-<div class="cargame">
-<div class="score"></div>
+<div class="mobileview d-md-none d-block">
+<div class="mainarea"></div>
+ </div>
+<div class="cargame box" id="game">
+
+<div class="score num"></div>
 <div class="screen">
-<p> Press here to start <br>
-    Use arrow keys to move<br>
+<p>
+   <span style="background:yellow; color:black;"> Use arrow keys to move</span><br><br>
 	If you hit another car you will lose</p>
+	<button class="button "  value="START GAME">START GAME</button>
 	</div>
-<div class="overscreen end">
-<p> game over!!!! <br>
-    Use arrow keys to move<br>
-	If you hit another car you will lose</p>
+
+	<div class="gamearea "> </div>
+	<div class="fire work">
+	<img class="fire1" src="https://img1.picmix.com/output/stamp/normal/7/3/3/4/534337_57369.gif">
+	<img class="fire2" src="https://img1.picmix.com/output/stamp/normal/7/4/3/4/534347_0e653.gif">
 	</div>
-	<div class="gamearea hide"> </div>
 </div>
 <script>
+var wid=window.outerWidth;
+console.log(wid);
+const cargame= document.querySelector('.cargame');
 const score= document.querySelector('.score');
 const screen= document.querySelector('.screen');
 const gamearea= document.querySelector('.gamearea');
-const overscreen=document.querySelector('.overscreen');
+const button=document.querySelector('.button');
+const fire=document.querySelector('.fire');
+if(wid<800)
+{
+cargame.classList.add('box');
 
+}
+else if(wid>800)
+{cargame.classList.remove('box');
+alert("refresh");
+}
 let player={speed:5,score:0};
 
 
@@ -59,18 +109,24 @@ moveenemy(car);
 if(keys.ArrowUp && player.y>(road.top+100)){player.y-=player.speed}
 if(keys.ArrowDown&& player.y<(road.bottom-75) ){player.y+=player.speed}
 if(keys.ArrowLeft && player.x>0){player.x-=player.speed}
-if(keys.ArrowRight && player.x<(road.width-50)){player.x+=player.speed}
+if(keys.ArrowRight && player.x<(road.width-70)){player.x+=player.speed}
 car.style.top=player.y+"px";
 car.style.left=player.x+"px";
 window.requestAnimationFrame(gameplay);
+score.classList.remove('num');
 console.log(player.score++);
+player.score++;
+score.innerText="Score : "+player.score;
+
 }
 }
 
+
 screen.addEventListener('click',start);
 function start(){ 
-gamearea.classList.remove('hide');
+gamearea.innerText="";
 screen.classList.add('hide');
+fire.classList.add('work');
 player.start=true;
 player.score=0;
 window.requestAnimationFrame(gameplay);
@@ -89,17 +145,18 @@ gamearea.appendChild(car);
 player.x=car.offsetLeft;
 player.y=car.offsetTop;
 
-for(x=0;x<3;x++)
+for(x=0;x<=7;x++)
 {
 let enemy= document.createElement('div');
 enemy.setAttribute('class','encar');
 enemy.y=((x+1)*350)* -1;
 enemy.style.top=enemy.y+"px";
-enemy.style.background="blue";
-enemy.style.left=Math.floor(Math.random()*380)+"px";
+enemy.style.backgroundImage=photos[x];
+enemy.style.left=Math.floor(Math.random()*500)+"px";
 
 gamearea.appendChild(enemy);
 }
+
 }
 
 function moveline()
@@ -118,12 +175,13 @@ function moveenemy(car)
 let encar= document.querySelectorAll('.encar');
 encar.forEach(function(value){ 
 if(collide(car,value)){ console.log("hit");
-hit();
+gameover();
 }
 
 if(value.y>=700){
-value.y=-300;
-value.style.left=Math.floor(Math.random()*380)+"px";
+value.y=-400;
+
+value.style.left=Math.floor(Math.random()*550)+"px";
 }
  value.y+=player.speed;
  value.style.top=value.y+"px";
@@ -134,12 +192,33 @@ value.style.left=Math.floor(Math.random()*380)+"px";
 function collide(a,b){
 arect=a.getBoundingClientRect();
 brect=b.getBoundingClientRect();
-return !((arect.top > brect.bottom)||(arect.bottom < brect.top)||(arect.left > brect.right)||(arect.right < brect.left))
+return !((arect.top > brect.bottom)||(arect.bottom < brect.top+9)||(arect.left > brect.right-17)||(arect.right < brect.left+18))
 }
 
 function hit(){
 gamearea.classList.add('hide');
-overscreen.classList.remove('end');}
+overscreen.classList.remove('end');
+} 
+function gameover()
+{
+player.start=false;
+screen.classList.remove('hide');
+
+if(player.score>2000)
+{fire.classList.remove('work');
+}
+data();
+screen.classList.add('pointer');
+}
+
+function data()
+{
+ screen.innerHTML="GAME OVER !!!!!! <br>"+"<font bgcolor='yellow'>YOUR FINAL SCORE :</font> "+(player.score+2)+"<br><br><button><font size='4'>CLICK HERE TO RESTART</font></button>";
+}
+
+
+var photos=["url('greencar.png')","url('bluecar.png')","url('orgcar.png')","url('graycar.png')","url('pinkcar.png')","url('greencar.png')","url('bluecar.png')","url('orgcar.png')"];
+
 
 </script>
 </body>
